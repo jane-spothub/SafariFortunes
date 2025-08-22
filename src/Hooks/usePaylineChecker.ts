@@ -1,4 +1,4 @@
-import type {PaylineResult} from "../../../InfinitySlots/src/Utils/types.ts";
+import type {PaylineResult} from "../Types/types.ts";
 import {paylines} from "./paylines.ts";
 
 export const checkPaylines = (
