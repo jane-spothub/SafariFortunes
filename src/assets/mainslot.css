@@ -1,0 +1,624 @@
+.MainSlots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(30, 58, 11);
+    height: 100vh;
+}
+
+.main-slots-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(12, 24, 4);
+    height: 100vh;
+    width: 100%;
+}
+
+.background {
+    background-image: url("../assets/img/new/slot-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+}
+
+.top-bar {
+    background-color: rgb(0, 0, 0);
+    display: flex;
+    padding: 10px 0;
+    color: white;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px;
+    align-items: center;
+    height: 20px;
+}
+
+.logo {
+    width: auto;
+    height: 40px;
+}
+
+.balance {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.top-settings-icon {
+    width: 35px;
+}
+
+.main-controls-canvas {
+    border: 1px solid black;
+    width: 100%;
+}
+
+
+.Main-content-canvas-container {
+    display: flex;
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    border: 1px solid white;
+}
+
+.IMG-display {
+    position: absolute;
+    max-height: 800px;
+    width: 100%;
+    /*height: 100vh;*/
+}
+
+.IMG {
+    /*max-height: 700px;*/
+    width: 1000px;
+    max-width: 100%;
+    max-height: 700px;
+    display: block;
+    margin: 0 auto;
+    animation: bounce 2s infinite;
+}
+
+.settings-overlay {
+    position: absolute;
+    top: 0;
+    display: flex;
+    float: right;
+    border: 1px solid white;
+}
+
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-30px);
+    }
+}
+
+
+.MainSlots-controls {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    /*border:1px solid white;*/
+    width: 100%;
+
+}
+
+.MainSlots-controls-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.MainSlots-c-content {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.slots-canvas {
+    max-width: 1000px;
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+
+}
+
+.button-controls-settings {
+    color: white;
+    width: 50px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+.bet-amount-area {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    width: 100%;
+
+}
+
+.button-controls {
+    color: rgb(6, 9, 3);
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-image: linear-gradient(to right, #67ff00 0%, #172d08 51%, #67ff00 100%);
+    text-align: center;
+    font-weight: bold;
+    transition: 0.5s;
+    background-size: 200% auto;
+}
+
+.button-controls:hover {
+    /*background-image: linear-gradient( 75.1deg,rgba(99,226,17,1)  6%,rgb(7, 65, 7)  84.3% );*/
+    background-position: right center;
+
+}
+
+.bet-amount-container {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(10, 3, 14);
+    border-radius: 10px;
+    padding: 6px 0;
+    gap: 2px;
+}
+
+.win-amount-container {
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.top-bet-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: bold;
+    padding: 4px;
+    color: rgba(255, 255, 255, 0.47);
+}
+
+.bet-win {
+    display: none;
+}
+
+.top-bet-win {
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    padding: 4px;
+    gap: 10px;
+    color: rgba(103, 255, 0, 0.44);
+}
+
+.display-amount {
+    display: none;
+}
+
+.bet-short-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.top-controls {
+    display: flex;
+    background-color: rgb(37, 39, 40);
+    border-radius: 10px;
+    width: 100%;
+    padding: 2px 0;
+    gap: 2px;
+}
+
+.bet-shortcuts {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    padding: 5px;
+    width: 100%;
+    background-color: rgba(52, 54, 56, 0.66);
+    border-radius: 10px;
+}
+
+.shortcut-btns {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.5s;
+    background-size: 200% auto;
+    background-image: linear-gradient(to right, #000000 0%, rgba(117, 115, 115, 0.51) 51%, #000000 100%);
+}
+
+.shortcut-btns:hover {
+    background-position: right center;
+
+}
+
+.bet-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(52, 54, 56, 0.66);
+    border-radius: 10px;
+    padding: 2px;
+}
+
+.plus-minus {
+    width: 30px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.5s;
+    background-size: 200% auto;
+    background-image: linear-gradient(to right, #000000 0%, rgba(117, 115, 115, 0.51) 51%, #000000 100%);
+
+}
+
+.plus-minus:hover {
+    background-position: right center;
+}
+
+.bet-amount-input {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(147, 112, 219, 0);
+    border: none;
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+/* overlay basic layout (adjust to your existing layout) */
+.results-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 500px;
+}
+
+/*.res-background {*/
+/*    background-image: url("../assets/img/new/slot-bg.png");*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*    background-repeat: no-repeat;*/
+/*    height: 100vh;*/
+/*    width: 100vw;*/
+/*}*/
+
+.results-container {
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px;
+    place-items: center;
+    background: rgba(2, 9, 10, 0.32);
+    border-radius: 10px;
+}
+
+.res-border {
+    border: 40px solid transparent;
+    /*border-image: url("../assets/img/slotBorder.png") 40 fill round;*/
+    animation: borderBreath 2.5s ease-in-out infinite;
+}
+
+@keyframes borderBreath {
+    0%, 100% {
+        filter: brightness(1);
+        opacity: 1;
+    }
+    50% {
+        filter: brightness(1.4);
+        opacity: 0.5;
+    }
+}
+
+
+.results-content {
+    perspective: 900px;
+    text-align: center;
+}
+
+.container {
+    text-align: center;
+    perspective: 1200px;
+    padding: 20px;
+}
+
+.three-d-text {
+    font-size: 2.8rem;
+    background: linear-gradient(90deg, #d99dee, #f8e6ff, #cfb9fa);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: sunlightPulse 6s infinite ease-in-out;
+    text-shadow: 2px 2px 0 #00000055;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+}
+
+@keyframes sunlightPulse {
+    0%, 100% {
+        transform: rotateX(10deg) rotateY(-10deg) scale(1);
+        background-position: 0% 50%;
+    }
+    50% {
+        transform: rotateX(0deg) rotateY(0deg) scale(1.1);
+        background-position: 100% 50%;
+    }
+}
+
+.glow-name {
+    font-size: 40px;
+    color: #fff;
+    animation: glowBright 2.8s infinite alternate ease-in-out;
+    text-shadow: 0 0 10px #00c6ff,
+    0 0 30px #4ad5ff,
+    0 0 60px #48d2fa,
+    0 0 100px #b1ebfc;
+    margin: 0;
+}
+
+@keyframes glowBright {
+    0% {
+        text-shadow: 0 0 10px #71ddfd,
+        0 0 30px #00c5ff,
+        0 0 60px #00c6ff,
+        0 0 100px #9ae0f5;
+        transform: translateY(0) rotateX(0) rotateY(0);
+
+    }
+    50% {
+        text-shadow: 0 0 15px #00c6ff,
+        0 0 50px #c6f2ff,
+        0 0 100px #c0f1ff,
+        0 0 150px #00c6ff;
+        transform: translateY(-14px) rotateX(6deg) rotateY(-3deg);
+
+    }
+    100% {
+        text-shadow: 0 0 15px #c9edf8,
+        0 0 50px #7edbf6,
+        0 0 100px #cef0fa,
+        0 0 150px #d3f0f8;
+        /*transform: scale(1.04);*/
+        transform: translateY(0) rotateX(0) rotateY(0);
+
+    }
+}
+
+@keyframes float3d {
+    0% {
+        transform: translateY(0) rotateX(0) rotateY(0);
+        filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+    }
+    50% {
+        transform: translateY(-14px) rotateX(6deg) rotateY(-3deg);
+        filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55));
+    }
+    100% {
+        transform: translateY(0) rotateX(0) rotateY(0);
+        filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+    }
+}
+
+/* POP-IN ANIMATION */
+@keyframes popIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* FADE-OUT ANIMATION */
+@keyframes fadeOut {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* attach animations */
+.pop-in {
+    animation: popIn 0.4s ease-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.4s ease-in forwards;
+}
+
+.results-amount {
+    margin-top: 12px;
+    font-size: 22px;
+    color: #fff;
+    opacity: 0.95;
+}
+
+.Mines-settings-dialog-overlay{
+    position: absolute;
+
+    right:0;
+    top:4%;
+    transform: none;
+    padding: 4px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border:1px solid rgba(255, 255, 255, 0.46);
+    /*background: rgb(1, 3, 3);*/
+    background-image: linear-gradient( 177.6deg, rgb(46, 114, 1) 15.3%, rgba(1,0,62,1) 91.3% );
+    border-radius: 10px;
+}
+
+.settings-close-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dialog-header{
+    font-size: 22px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.dialog-content{
+    text-align: left;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.59);
+}
+
+.mines-Settings-dialog-controls{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5px;
+}
+
+.mines-Settings-snd-info-control{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+}
+
+.mines-Settings-snd-info-control:hover{
+    background: #315264;
+    padding: 5px;
+}
+
+.game-info-snd-icon {
+    width: 26px;
+}
+
+@media (min-width: 600px){
+    .Mines-settings-dialog-overlay {
+        position: absolute;
+        padding: 4px;
+        border-radius: 10px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .slots-canvas {
+        max-width: 1000px;
+        max-height: 700px;
+    }
+
+    .MainSlots-controls {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bet-short-input {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .glow-name {
+        font-size: 5.2rem;
+        color: #fff;
+        animation: glowBright 2.8s infinite alternate ease-in-out;
+        text-shadow: 0 0 10px #00c6ff,
+        0 0 30px #4ad5ff,
+        0 0 60px #48d2fa,
+        0 0 100px #b1ebfc;
+        margin: 0;
+    }
+}
+
+@media (min-width: 1000px) {
+    .Mines-settings-dialog-overlay{
+        position: absolute;
+        transform: none;
+        /*background: rgb(1, 3, 3);*/
+        padding: 4px;
+        border-radius: 10px;
+        z-index: 1000;
+        right:4%;
+        top:4%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border:1px solid rgba(255, 255, 255, 0.28);
+    }
+}
+
+/* High-res / Retina laptops (≤2560px or ≤2880px) */
+@media (max-width: 2560px) and (min-width: 1400px){
+    .Mines-settings-dialog-overlay{
+        position: absolute;
+        transform: none;
+        /*background: rgb(1, 3, 3);*/
+        padding: 4px;
+        border-radius: 10px;
+        z-index: 1000;
+        right:24%;
+        top:4%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border:1px solid rgba(255, 255, 255, 0.28);
+    }
+}
+
