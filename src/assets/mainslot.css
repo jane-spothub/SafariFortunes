@@ -546,6 +546,85 @@
     width: 26px;
 }
 
+.how-to-play-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.how-to-play-container {
+    background: linear-gradient(145deg, #0c1e07, #1d3a11);
+    border: 3px solid #67ff00;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 25px rgba(103,255,0,0.6);
+    color: #e8fbe5;
+    font-family: 'Poppins', sans-serif;
+}
+
+.title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #67ff00;
+    text-shadow: 0 0 10px #67ff00, 0 0 20px #3f8d0b;
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #bfefb4;
+    margin-top: 1rem;
+}
+
+.objective {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: #c8f5be;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    margin: 1.5rem 0 1rem;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
+}
+
+.rule-block {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.25);
+    border-left: 4px solid #67ff00;
+    border-radius: 8px;
+}
+
+.rule-block h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #ffcc00;
+    text-shadow: 0 0 6px #ffcc00;
+}
+
+.rule-block ul {
+    padding-left: 1.2rem;
+}
+
+.rule-block li {
+    margin-bottom: 0.4rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 @media (min-width: 600px){
     .Mines-settings-dialog-overlay {
         position: absolute;

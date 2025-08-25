@@ -7,6 +7,7 @@ import slotLogo from "../assets/img/new/safari-logo.png";
 import {MainControls} from "./Main-Controls.tsx";
 import {useSafariFortuneSnd} from "../Hooks/UseSounds/useSafariFortuneSnd.ts";
 import {SafariFortuneDialog} from "./SafariFortuneDialog.tsx";
+import {HowToPlay} from "./HowToPlay.tsx";
 
 export const MainSlots = () => {
     const [betAmount, setBetAmount] = useState<number>(100);
@@ -15,11 +16,11 @@ export const MainSlots = () => {
     const [amountWon, setAmountWon] = useState<number>(0)
     const [resultPopUp, setResultPopUp] = useState<boolean>(false)
     const [isFading, setIsFading] = useState(false);
-    const {playSafariSnd, playSafariLoop} = useSafariFortuneSnd(false, true)
     const [noWinning, setNoWinning] = useState<boolean>(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isMuted, setIsMuted] = useState<boolean>(false);
     const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
+    const {playSafariSnd, playSafariLoop} = useSafariFortuneSnd(isMuted, true)
 
     const handleSpin = () => {
         if (spinTrigger) return;
@@ -116,6 +117,11 @@ export const MainSlots = () => {
                               amountWon={amountWon}
                 />
 
+                {isHelpOpen &&(
+                    <HowToPlay
+                        OnSetHelp={setIsHelpOpen}
+                    />
+                )}
                 {resultPopUp && (
                     <div className={`results-overlay ${isFading ? "fade-out" : "pop-in"}`}>
                         <div className="results-container">
