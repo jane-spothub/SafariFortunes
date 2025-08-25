@@ -10,8 +10,8 @@ import {SafariFortuneDialog} from "./SafariFortuneDialog.tsx";
 import {HowToPlay} from "./HowToPlay.tsx";
 
 export const MainSlots = () => {
-    const [betAmount, setBetAmount] = useState<number>(100);
-    const [balance, setBalance] = useState<number>(50000);
+    const [betAmount, setBetAmount] = useState<number>(20);
+    const [balance, setBalance] = useState<number>(5000);
     const [spinTrigger, setSpinTrigger] = useState<boolean>(false);
     const [amountWon, setAmountWon] = useState<number>(0)
     const [resultPopUp, setResultPopUp] = useState<boolean>(false)

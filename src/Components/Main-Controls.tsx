@@ -33,11 +33,11 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                 <div className="bet-short-input">
                     <div className="top-controls">
                         <div className="bet-shortcuts" onClick={e => e.stopPropagation()}>
-                            {[10, 20, 30, 40, 50].map(amount => (
+                              {[20, 50, 100, 500, 1000].map(amount => (
                                 <div
                                     key={amount}
                                     className="shortcut-btns"
-                                    onClick={(e) => {
+                                  onClick={(e) => {
                                         e.stopPropagation();
                                         if (!spinTrigger) {
                                             onBetAmount(amount);
@@ -55,7 +55,7 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                                 className="plus-minus"
                                 onClick={e => {
                                     e.stopPropagation();
-                                    onBetAmount(prev => Math.max(prev - 10, 10));
+                                    onBetAmount(prev => Math.max(prev - 10, 20));
                                 }}
                             >
                                 -
@@ -64,18 +64,26 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                                 className="bet-amount-input"
                                 type="number"
                                 value={betAmount}
-                                onChange={e => {
-                                    e.stopPropagation();
-                                    onBetAmount(Math.min(Math.max(Number(e.target.value), 10), 100));
-                                }}
-                                // onChange={handleInputChange}
+                                min={20}
+                                max={1000}
+                                step={10}
+                                onChange={(e) =>
+                                    onBetAmount(
+                                        Math.min(
+                                            Math.max(Math.round(Number(e.target.value) / 10) * 10, 20),
+                                            1000
+                                        )
+                                    )
+                                }
                             />
+
                             <div
                                 className="plus-minus"
                                 onClick={e => {
                                     e.stopPropagation();
-                                    onBetAmount(prev => Math.min(prev + 10, 100));
+                                    onBetAmount(prev => Math.min(prev + 10, 1000));
                                 }}
+
                             >
                                 +
                             </div>

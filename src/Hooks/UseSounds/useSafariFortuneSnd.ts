@@ -3,7 +3,7 @@ import RollSndSrc from "./SafariSlotSonds/rollin-snd.mp3";
 import NiceOneSndSrc from "./SafariSlotSonds/nice-one-snd.mp3";
 import AwinSndSrc from "./SafariSlotSonds/a-win-is-a-win.mp3";
 import ThatsMassiveSndSrc from "./SafariSlotSonds/a-win-is-a-win.mp3";
-import DiceBackgroundSound from "./SafariSlotSonds/backgroun-snd.mp3";
+import DiceBackgroundSound from "./SafariSlotSonds/backgrounsnd.mp3";
 
 export const useSafariFortuneSnd = (isMuted: boolean, loop: boolean) => {
     const DiceAudioInstances = useMemo(() => {
