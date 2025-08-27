@@ -65,36 +65,124 @@ export function useNewDrawCanvas({
         ctx.closePath();
         ctx.fill();
     }, [canvasWidth, canvasHeight]);
+    const goldStops = [
+        "#67ff00",
+        "#183802",
+        "#67ff00",
+        "#3f8d0b",
+        "#204904"
+    ];
 
-    const drawCanvasBorder = useCallback((ctx: CanvasRenderingContext2D) => {
+    const drawCanvasBorder = (
+        ctx: CanvasRenderingContext2D,
+        glowOpacity: number = 0.8,
+        showGlowHoles: boolean = false
+    ) => {
         ctx.save();
         const borderThickness = 4;
         const cornerRadius = 10;
+        const holeRadius = 15;
         ctx.lineWidth = borderThickness;
 
+        // --- Stroke style depending on spinTrigger ---
         if (spinTrigger) {
-            ctx.strokeStyle = "#67ff00";
-            ctx.shadowColor = "rgba(0,198,255,0.8)";
-            ctx.shadowBlur = 10;
+            ctx.lineJoin = "round";
+            ctx.shadowColor = `rgba(0, 198, 255, ${glowOpacity})`;
+            ctx.shadowBlur = 6;
+
+            // Moving shimmer effect
+            const shimmerSpeed = 0.5;
+            const offsetY = canvasHeight - ((Date.now() * shimmerSpeed) % canvasHeight);
+            const gradient = ctx.createLinearGradient(0, offsetY + 150, 0, offsetY);
+            goldStops.forEach((color, i) => {
+                gradient.addColorStop(i / (goldStops.length - 1), color);
+            });
+            ctx.strokeStyle = gradient;
         } else {
             ctx.strokeStyle = "#2c6505";
             ctx.shadowBlur = 0;
         }
 
         const inset = borderThickness / 2;
+        const slotAreaBottom = 700;
+
+        // --- Border Path ---
         ctx.beginPath();
         ctx.moveTo(inset + cornerRadius, inset);
         ctx.lineTo(canvasWidth - inset - cornerRadius, inset);
         ctx.quadraticCurveTo(canvasWidth - inset, inset, canvasWidth - inset, inset + cornerRadius);
-        ctx.lineTo(canvasWidth - inset, canvasHeight - cornerRadius);
-        ctx.quadraticCurveTo(canvasWidth - inset, canvasHeight, canvasWidth - inset - cornerRadius, canvasHeight);
-        ctx.lineTo(inset + cornerRadius, canvasHeight);
-        ctx.quadraticCurveTo(inset, canvasHeight, inset, canvasHeight - cornerRadius);
+        ctx.lineTo(canvasWidth - inset, slotAreaBottom - cornerRadius);
+        ctx.quadraticCurveTo(canvasWidth - inset, slotAreaBottom, canvasWidth - inset - cornerRadius, slotAreaBottom);
+        ctx.lineTo(inset + cornerRadius, slotAreaBottom);
+        ctx.quadraticCurveTo(inset, slotAreaBottom, inset, slotAreaBottom - cornerRadius);
         ctx.lineTo(inset, inset + cornerRadius);
         ctx.quadraticCurveTo(inset, inset, inset + cornerRadius, inset);
         ctx.stroke();
+
+        // --- Punch Holes ---
+        const holePositions: [number, number][] = [
+            [canvasWidth / 2, inset],                     // top
+            [canvasWidth / 2, slotAreaBottom],            // bottom
+            [inset, slotAreaBottom / 2],                  // left
+            [canvasWidth - inset, slotAreaBottom / 2]     // right
+        ];
+
+        ctx.save();
+        ctx.globalCompositeOperation = "destination-out";
+        holePositions.forEach(([x, y]) => {
+            ctx.beginPath();
+            ctx.arc(x, y, holeRadius, 0, Math.PI * 2);
+            ctx.fill();
+        });
         ctx.restore();
-    }, [canvasWidth, canvasHeight, spinTrigger]);
+
+        // --- Optional Glow Around Holes ---
+        if (showGlowHoles && spinTrigger) {
+            ctx.save();
+            ctx.globalCompositeOperation = "lighter";
+            ctx.shadowColor = `rgba(210,141,13,0.8)`;
+            ctx.shadowBlur = 35;
+            ctx.fillStyle = `#d28d0d`;
+            holePositions.forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, holeRadius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+
+        ctx.restore();
+    };
+
+    // const drawCanvasBorder = useCallback((ctx: CanvasRenderingContext2D) => {
+    //     ctx.save();
+    //     const borderThickness = 4;
+    //     const cornerRadius = 10;
+    //     ctx.lineWidth = borderThickness;
+    //
+    //     if (spinTrigger) {
+    //         ctx.strokeStyle = "#67ff00";
+    //         ctx.shadowColor = "rgba(0,198,255,0.8)";
+    //         ctx.shadowBlur = 10;
+    //     } else {
+    //         ctx.strokeStyle = "#2c6505";
+    //         ctx.shadowBlur = 0;
+    //     }
+    //
+    //     const inset = borderThickness / 2;
+    //     ctx.beginPath();
+    //     ctx.moveTo(inset + cornerRadius, inset);
+    //     ctx.lineTo(canvasWidth - inset - cornerRadius, inset);
+    //     ctx.quadraticCurveTo(canvasWidth - inset, inset, canvasWidth - inset, inset + cornerRadius);
+    //     ctx.lineTo(canvasWidth - inset, canvasHeight - cornerRadius);
+    //     ctx.quadraticCurveTo(canvasWidth - inset, canvasHeight, canvasWidth - inset - cornerRadius, canvasHeight);
+    //     ctx.lineTo(inset + cornerRadius, canvasHeight);
+    //     ctx.quadraticCurveTo(inset, canvasHeight, inset, canvasHeight - cornerRadius);
+    //     ctx.lineTo(inset, inset + cornerRadius);
+    //     ctx.quadraticCurveTo(inset, inset, inset + cornerRadius, inset);
+    //     ctx.stroke();
+    //     ctx.restore();
+    // }, [canvasWidth, canvasHeight, spinTrigger]);
 
     const drawColumnSeparators = useCallback((ctx: CanvasRenderingContext2D, glow = false) => {
         ctx.save();
