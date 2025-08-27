@@ -4,6 +4,7 @@
     align-items: center;
     background-color: rgb(30, 58, 11);
     height: 100vh;
+    font-family: "Ubuntu Sans Mono", "Lucida Console", monospace;
 }
 
 .main-slots-container {
@@ -38,14 +39,19 @@
 
 .logo {
     width: auto;
-    height: 40px;
+    height: 50px;
 }
 
 .balance {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
-}
+    display: flex;
+    align-items: center;
 
+}
+.balance-amount{
+    color: #67ff00;
+}
 .top-settings-icon {
     width: 35px;
 }
@@ -515,7 +521,8 @@
 .dialog-content{
     text-align: left;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.59);
+    color: rgba(255, 255, 255, 0.81);
+    font-weight:bold;
 }
 
 .mines-Settings-dialog-controls{
@@ -534,11 +541,10 @@
     padding: 5px;
     border-radius: 5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-
 }
 
 .mines-Settings-snd-info-control:hover{
-    background: #315264;
+    background: rgba(0, 198, 255, 0.45);
     padding: 5px;
 }
 

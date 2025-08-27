@@ -121,8 +121,13 @@ export const MainSlots = () => {
         <div className="MainSlots">
             <div className="main-slots-container background">
                 <div className="top-bar">
+                    <div className="balance">Bal:
+                       <div className="balance-amount">
+                           {balance}
+                       </div>
+                    </div>
+
                     <img className="logo" src={slotLogo} alt="logo"/>
-                    <div className="balance">{balance}</div>
 
                     {!isSettingsOpen ? (
                         <img className="top-settings-icon" src={settings} alt="settings"

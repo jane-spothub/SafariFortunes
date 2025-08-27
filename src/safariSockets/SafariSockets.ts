@@ -7,7 +7,7 @@ export const useWs = () => {
 
     const connectSocket = useCallback(() => {
         if (ws.current && ws.current.readyState !== WebSocket.CLOSED) {
-            console.log('WebSocket connected');
+            // console.log('WebSocket connected');
             return;
         }
 
@@ -27,7 +27,7 @@ export const useWs = () => {
         };
 
         ws.current.onmessage = (event: MessageEvent<string>) => {
-            console.log('Received a raw message event:', event);
+            // console.log('Received a raw message event:', event);
 
             if (event && event.data) {
                 // console.log('Raw message data:', event.data);
@@ -51,7 +51,7 @@ export const useWs = () => {
 
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
             ws.current.send(message);
-            console.log('Message sent:', message);
+            // console.log('Message sent:', message);
         } else {
             messageQueue.current.push(data);
             // console.error('WebSocket is not open. Message queued.');
