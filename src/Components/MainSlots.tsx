@@ -92,8 +92,6 @@ export const MainSlots = () => {
     useEffect(() => {
         if (amountWon > 1) {
                 setResultPopUp(true);
-
-
             if (amountWon >= 1000) {
                 playSafariSnd("ThatsMassiveSnd");
             } else if (amountWon > 500) {
@@ -111,16 +109,13 @@ export const MainSlots = () => {
                 setIsFading(false);
                 setAmountWon(0);
 
-
             }, 6400);
-
             return () => {
                 clearTimeout(fadeTimer);
                 clearTimeout(hideTimer);
             };
         }
     }, [amountWon, playSafariSnd]);
-
 
     return (
         <div className="MainSlots">
