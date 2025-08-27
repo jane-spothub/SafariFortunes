@@ -93,6 +93,7 @@ export const MainSlots = () => {
         if (amountWon > 1) {
                 setResultPopUp(true);
 
+
             if (amountWon >= 1000) {
                 playSafariSnd("ThatsMassiveSnd");
             } else if (amountWon > 500) {
