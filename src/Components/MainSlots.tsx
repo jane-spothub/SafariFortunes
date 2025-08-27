@@ -38,7 +38,7 @@ export const MainSlots = () => {
         socket.onmessage = (event: MessageEvent<string>) => {
             try {
                 const data: SpinResponse = JSON.parse(event.data);
-                console.log("Game response:", data);
+                // console.log("Game response:", data);
                 setSpinResponse(data);
                 setTimeout(()=>{
                     setBalance(data.Balance);
