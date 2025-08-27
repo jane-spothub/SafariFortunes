@@ -1,7 +1,42 @@
-export type PaylineResult = {
-    lineIndex: number;
-    symbol: string;
-    payout: number;
-    count: number;
-    positions: [number, number][]; // Coordinates [col, row] of matched symbols
-};
+export type sendData={
+    msisdn:string,
+    amount:string,
+    action:string
+}
+
+// one symbol cell on the grid
+export type SymbolName = "Leopard" | "Tigre" | "Hippo" | "Lion" | "Rhino" | "Elephant";
+// Types/types.ts
+
+// One row = exactly 5 symbols
+export type Row = [SymbolName, SymbolName, SymbolName, SymbolName, SymbolName];
+
+// ReelMatrix = exactly 4 rows (4 x 5)
+export type ReelMatrix = [Row, Row, Row, Row];
+
+
+// backend spin result
+export interface SpinResponse {
+    message: string;
+    Balance: string;
+    winnings: string;
+    msisdn: string;
+    winningPaylines: {
+        totalPayout: number;
+        reels: ReelMatrix; // the final 4x5 grid from backend
+        wins: {
+            symbol: SymbolName;
+            linesHit: number;
+            payout: number;
+            lines: number[];
+        }[];
+    };
+}
+// Each payline has exactly 5 positions (one per reel column)
+export type Payline = [RowIndex, RowIndex, RowIndex, RowIndex, RowIndex];
+
+// RowIndex must be one of the 4 possible rows
+export type RowIndex = 0 | 1 | 2 | 3;
+
+// The full collection of paylines
+export type Paylines = Payline[];

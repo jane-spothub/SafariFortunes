@@ -83,7 +83,6 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                                     e.stopPropagation();
                                     onBetAmount(prev => Math.min(prev + 10, 1000));
                                 }}
-
                             >
                                 +
                             </div>

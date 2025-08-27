@@ -1,10 +1,12 @@
-export const paylines = [
+import type {Paylines} from "../Types/types.ts";
+
+export const paylines:Paylines = [
     [0, 0, 0, 0, 0],   // Line 1 - Top
     [1, 1, 1, 1, 1],   // Line 2 - Upper Middle
     [2, 2, 2, 2, 2],   // Line 3 - Lower Middle
     [3, 3, 3, 3, 3],   // Line 4 - Bottom
     [0, 1, 2, 1, 0],   // Line 5 - V
-    [3, 2, 1, 2, 3],   // Line 6 - Inverted V
+    [3, 2, 1, 2, 3],   // Line 6 - Inverted V----
     [0, 1, 1, 1, 0],   // Line 7 - Edge to center top
     [3, 2, 2, 2, 3],   // Line 8 - Edge to center bottom
     [1, 2, 1, 2, 1],   // Line 9 - Zigzag upper-mid/lower-mid

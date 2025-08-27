@@ -1,4 +1,3 @@
-import {SlotsCanvas} from "./SlotsCanvas.tsx";
 import "../assets/mainslot.css";
 import {useEffect, useState} from "react";
 import settings from "../assets/img/new/settings.png";
@@ -8,25 +7,76 @@ import {MainControls} from "./Main-Controls.tsx";
 import {useSafariFortuneSnd} from "../Hooks/UseSounds/useSafariFortuneSnd.ts";
 import {SafariFortuneDialog} from "./SafariFortuneDialog.tsx";
 import {HowToPlay} from "./HowToPlay.tsx";
+import type {sendData, SpinResponse} from "../Types/types.ts";
+import {useWs} from "../safariSockets/SafariSockets.ts";
+import {SlotCanvas} from "./SlotCanvas.tsx";
+import {mapServerWinsToResults, type PaylineResult} from "../Hooks/mapWinToCanvas.ts";
 
 export const MainSlots = () => {
-    const [betAmount, setBetAmount] = useState<number>(20);
-    const [balance, setBalance] = useState<number>(5000);
+    const [betAmount, setBetAmount] = useState<number>(1);
+    const [balance, setBalance] = useState<string>("---");
     const [spinTrigger, setSpinTrigger] = useState<boolean>(false);
     const [amountWon, setAmountWon] = useState<number>(0)
     const [resultPopUp, setResultPopUp] = useState<boolean>(false)
     const [isFading, setIsFading] = useState(false);
-    const [noWinning, setNoWinning] = useState<boolean>(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isMuted, setIsMuted] = useState<boolean>(false);
     const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
     const {playSafariSnd, playSafariLoop} = useSafariFortuneSnd(isMuted, true)
+    const {connectSocket, sendData, getSocket} = useWs();
+    const [spinResponse, setSpinResponse] = useState<SpinResponse | undefined>()
+    const [serverReels, setServerReels] = useState<string[][]>([]);
+    const [paylineResults, setPaylineResults] = useState<PaylineResult[]>([]);
+    const [totalPayout, setTotalPayout] = useState(0);
+
+
+    useEffect(() => {
+        connectSocket();
+        const socket = getSocket();
+        if (!socket) return;
+
+        socket.onmessage = (event: MessageEvent<string>) => {
+            try {
+                const data: SpinResponse = JSON.parse(event.data);
+                console.log("Game response:", data);
+                setSpinResponse(data);
+                setTimeout(()=>{
+                    setBalance(data.Balance);
+                    setAmountWon(parseFloat(data.winnings));
+                },2500)
+
+
+                if (data.winningPaylines) {
+                    const serverReels = data.winningPaylines.reels;
+                    setServerReels(serverReels);
+
+                    const results = mapServerWinsToResults(
+                        data.winningPaylines.wins || []
+                    );
+                    setPaylineResults(results);
+                    setTotalPayout(data.winningPaylines.totalPayout);
+                }
+
+
+            } catch (err) {
+                console.error("Error parsing server message:", err);
+            }
+        };
+    }, [connectSocket, getSocket]);
+
 
     const handleSpin = () => {
         if (spinTrigger) return;
-        if (balance <= 0) return;
+        // if (balance <= 0) return;
         if (resultPopUp) return;
         setSpinTrigger(true);
+        const spinRequest: sendData = {
+            msisdn: "254791847766", // or dynamically from user
+            action: "spin",
+            amount: `${betAmount}`
+        };
+        sendData(spinRequest);
+
         playSafariLoop();
         // if(resultPopUp){
         //     setResultPopUp(false);
@@ -35,14 +85,13 @@ export const MainSlots = () => {
         //         },1000)}
         setTimeout(() => {
             setSpinTrigger(false);
+            playSafariSnd("ReelStop");
         }, 2500);
-        setBalance(prev => prev - betAmount);
     };
 
     useEffect(() => {
         if (amountWon > 1) {
-            setResultPopUp(true);
-            setNoWinning(false);
+                setResultPopUp(true);
 
             if (amountWon >= 1000) {
                 playSafariSnd("ThatsMassiveSnd");
@@ -51,7 +100,6 @@ export const MainSlots = () => {
             } else if (amountWon > 0) {
                 playSafariSnd("AwinSnd");
             }
-
 
             const fadeTimer = setTimeout(() => {
                 setIsFading(true);
@@ -69,9 +117,6 @@ export const MainSlots = () => {
                 clearTimeout(fadeTimer);
                 clearTimeout(hideTimer);
             };
-        } else {
-            setNoWinning(true);
-
         }
     }, [amountWon, playSafariSnd]);
 
@@ -101,13 +146,22 @@ export const MainSlots = () => {
                 </div>
 
 
+                {/*<SlotsCanvas*/}
+                {/*    spinTrigger={spinTrigger}*/}
+                {/*    betAmount={betAmount}*/}
+                {/*    OnSetAmountWon={setAmountWon}*/}
+                {/*    resultPopUp={resultPopUp}*/}
+                {/*    noWinning={noWinning}*/}
+                {/*    reels={serverReels}            // 🔑 pass reels*/}
+                {/*    paylines={paylineResults}*/}
+                {/*    totalPayout={totalPayout}*/}
+                {/*/>*/}
 
-                <SlotsCanvas
+                <SlotCanvas
                     spinTrigger={spinTrigger}
-                    betAmount={betAmount}
-                    OnSetAmountWon={setAmountWon}
-                    resultPopUp={resultPopUp}
-                    noWinning={noWinning}
+                    reels={serverReels}
+                    paylines={paylineResults}
+                    spinResponse={spinResponse}
                 />
 
                 <MainControls spinTrigger={spinTrigger}
@@ -117,7 +171,7 @@ export const MainSlots = () => {
                               amountWon={amountWon}
                 />
 
-                {isHelpOpen &&(
+                {isHelpOpen && (
                     <HowToPlay
                         OnSetHelp={setIsHelpOpen}
                     />
@@ -136,6 +190,9 @@ export const MainSlots = () => {
                                 <h2 className="three-d-text">
                                     Ksh{amountWon}
                                 </h2>
+                                <div className="three-d-text">
+                                    {totalPayout}
+                                </div>
                             </div>
                         </div>
                     </div>
