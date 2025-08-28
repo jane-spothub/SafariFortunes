@@ -27,7 +27,6 @@ export const MainSlots = () => {
     const [spinResponse, setSpinResponse] = useState<SpinResponse | undefined>()
     const [serverReels, setServerReels] = useState<string[][]>([]);
     const [paylineResults, setPaylineResults] = useState<PaylineResult[]>([]);
-    const [totalPayout, setTotalPayout] = useState(0);
     const [toastMsg, setToastMsg] = useState<string | null>(null);
 
     const showToast = (msg: string) => {
@@ -63,7 +62,6 @@ export const MainSlots = () => {
                         data.winningPaylines.wins || []
                     );
                     setPaylineResults(results);
-                    setTotalPayout(data.winningPaylines.totalPayout);
                 }
             } catch (err) {
                 console.error("Error parsing server message:", err);
@@ -95,7 +93,7 @@ export const MainSlots = () => {
     };
 
     useEffect(() => {
-        if (amountWon > 1) {
+        if (amountWon > 0) {
                 setResultPopUp(true);
             if (amountWon >= 1000) {
                 playSafariSnd("ThatsMassiveSnd");
@@ -185,9 +183,7 @@ export const MainSlots = () => {
                                 <h2 className="three-d-text">
                                     Ksh{amountWon}
                                 </h2>
-                                <div className="three-d-text">
-                                    {totalPayout}
-                                </div>
+
                             </div>
                         </div>
                     </div>
