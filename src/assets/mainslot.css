@@ -49,9 +49,11 @@
     align-items: center;
 
 }
-.balance-amount{
+
+.balance-amount {
     color: #67ff00;
 }
+
 .top-settings-icon {
     width: 35px;
 }
@@ -185,7 +187,8 @@
     background-color: rgb(10, 3, 14);
     border-radius: 10px;
     padding: 6px 0;
-    gap: 2px;
+    gap: 5px;
+    margin-top:0.06em;
 }
 
 .win-amount-container {
@@ -223,34 +226,37 @@
 .bet-short-input {
     display: flex;
     flex-direction: column;
+    gap:10px;
 }
 
 .top-controls {
     display: flex;
     background-color: rgb(37, 39, 40);
     border-radius: 10px;
-    width: 100%;
     padding: 2px 0;
-    gap: 2px;
+    gap: 3px;
+
 }
 
 .bet-shortcuts {
     display: flex;
     flex-direction: row;
-    gap: 4px;
-    padding: 5px;
+    gap: 2px;
+    padding: 5px 2px;
     width: 100%;
     background-color: rgba(52, 54, 56, 0.66);
     border-radius: 10px;
+    flex-wrap:wrap;
 }
 
 .shortcut-btns {
-    flex: 1;
-    padding: 10px;
+    flex: 1 1 0; /* allow shrinking */
+    min-width: 10px; /* optional: prevent buttons from becoming too small */
+    padding: 10px 3px; /* reduce padding slightly */
     border-radius: 10px;
     text-align: center;
     font-weight: bold;
-    transition: 0.5s;
+    font-size: 0.7rem;
     background-size: 200% auto;
     background-image: linear-gradient(to right, #000000 0%, rgba(117, 115, 115, 0.51) 51%, #000000 100%);
 }
@@ -267,16 +273,18 @@
     width: 100%;
     background-color: rgba(52, 54, 56, 0.66);
     border-radius: 10px;
-    padding: 2px;
 }
 
 .plus-minus {
-    width: 30px;
+    /*flex:1;*/
+    width: auto;
     padding: 10px;
     text-align: center;
     font-weight: bold;
     border-radius: 10px;
     transition: 0.5s;
+    font-size: 0.8rem;
+
     background-size: 200% auto;
     background-image: linear-gradient(to right, #000000 0%, rgba(117, 115, 115, 0.51) 51%, #000000 100%);
 
@@ -288,13 +296,15 @@
 
 .bet-amount-input {
     width: 100%;
-    padding: 10px;
+    padding: 10px 0;
     text-align: center;
     background-color: rgba(147, 112, 219, 0);
     border: none;
     font-weight: bold;
     color: white;
-    font-size: 16px;
+    /*font-size: 16px;*/
+    font-size: 0.8rem;
+
     outline: none;
 }
 
@@ -484,24 +494,24 @@
     opacity: 0.95;
 }
 
-.Mines-settings-dialog-overlay{
+.Mines-settings-dialog-overlay {
     position: absolute;
 
-    right:0;
-    top:4%;
+    right: 0;
+    top: 4%;
     transform: none;
     padding: 4px;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border:1px solid rgba(255, 255, 255, 0.46);
+    border: 1px solid rgba(255, 255, 255, 0.46);
     /*background: rgb(1, 3, 3);*/
-    background-image: linear-gradient( 177.6deg, rgb(46, 114, 1) 15.3%, rgba(1,0,62,1) 91.3% );
+    background-image: linear-gradient(177.6deg, rgb(46, 114, 1) 15.3%, rgba(1, 0, 62, 1) 91.3%);
     border-radius: 10px;
 }
 
-.settings-close-container{
+.settings-close-container {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -512,27 +522,27 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.dialog-header{
+.dialog-header {
     font-size: 22px;
     font-weight: bold;
     color: rgb(255, 255, 255);
 }
 
-.dialog-content{
+.dialog-content {
     text-align: left;
     font-size: 16px;
     color: rgba(255, 255, 255, 0.81);
-    font-weight:bold;
+    font-weight: bold;
 }
 
-.mines-Settings-dialog-controls{
+.mines-Settings-dialog-controls {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 5px;
 }
 
-.mines-Settings-snd-info-control{
+.mines-Settings-snd-info-control {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -543,7 +553,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.mines-Settings-snd-info-control:hover{
+.mines-Settings-snd-info-control:hover {
     background: rgba(0, 198, 255, 0.45);
     padding: 5px;
 }
@@ -571,7 +581,7 @@
     max-width: 1000px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 0 25px rgba(103,255,0,0.6);
+    box-shadow: 0 0 25px rgba(103, 255, 0, 0.6);
     color: #e8fbe5;
     font-family: 'Poppins', sans-serif;
 }
@@ -606,7 +616,7 @@
 .rule-block {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: rgba(0,0,0,0.25);
+    background: rgba(0, 0, 0, 0.25);
     border-left: 4px solid #67ff00;
     border-radius: 8px;
 }
@@ -627,9 +637,16 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
+
 /*added toast*/
 .custom-toast {
     position: fixed;
@@ -645,10 +662,21 @@
 }
 
 @keyframes fadeInOut {
-    0% { opacity: 0; transform: translate(-50%, -20px); }
-    10% { opacity: 1; transform: translate(-50%, 0); }
-    90% { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -20px); }
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
 }
 
 
@@ -664,16 +692,15 @@
     position: relative;
 }
 
-.safari-poster{
+.safari-poster {
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
     max-width: 600px;
-    max-height:600px;
-    margin-top: 80px;
+    max-height: 500px;
 }
 
-.loading-container{
+.loading-container {
     position: absolute;
     bottom: 10%;
     display: flex;
@@ -682,14 +709,14 @@
     width: 100%;
 }
 
-.gt-logo{
+.gt-logo {
     width: 200px;
     height: auto;
     object-fit: contain;
     margin-bottom: 20px;
 }
 
-.progress-bar{
+.progress-bar {
     width: 70%;
     height: 8px;
     background-color: #444;
@@ -698,13 +725,13 @@
     margin-bottom: 10px;
 }
 
-.progress-content{
+.progress-content {
     height: 100%;
     background-color: limegreen;
     transition: width 0.3s ease;
 }
 
-@media (min-width: 600px){
+@media (min-width: 600px) {
     .Mines-settings-dialog-overlay {
         position: absolute;
         padding: 4px;
@@ -714,7 +741,8 @@
         flex-direction: column;
         justify-content: center;
     }
-    .loading-container{
+
+    .loading-container {
         position: absolute;
         bottom: 2%;
         display: flex;
@@ -749,42 +777,66 @@
         0 0 100px #b1ebfc;
         margin: 0;
     }
+
+    .top-controls {
+        display: flex;
+        background-color: rgb(37, 39, 40);
+        border-radius: 10px;
+        width: 100%;
+        padding: 2px 1px;
+    }
+    .safari-poster {
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
+        max-width: 600px;
+        max-height: 750px;
+        /*margin-top: 80px;*/
+        /*margin-top: 80px;*/
+    }
+
+    .shortcut-btns ,
+    .bet-amount-input,
+    .plus-minus{
+        font-size: 1rem;
+    }
+
 }
 
 @media (min-width: 1000px) {
-    .Mines-settings-dialog-overlay{
+    .Mines-settings-dialog-overlay {
         position: absolute;
         transform: none;
         /*background: rgb(1, 3, 3);*/
         padding: 4px;
         border-radius: 10px;
         z-index: 1000;
-        right:4%;
-        top:4%;
+        right: 4%;
+        top: 4%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border:1px solid rgba(255, 255, 255, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.28);
     }
 }
 
 /* High-res / Retina laptops (≤2560px or ≤2880px) */
-@media (max-width: 2560px) and (min-width: 1400px){
-    .Mines-settings-dialog-overlay{
+@media (max-width: 2560px) and (min-width: 1400px) {
+    .Mines-settings-dialog-overlay {
         position: absolute;
         transform: none;
         /*background: rgb(1, 3, 3);*/
         padding: 4px;
         border-radius: 10px;
         z-index: 1000;
-        right:24%;
-        top:4%;
+        right: 24%;
+        top: 4%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border:1px solid rgba(255, 255, 255, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.28);
     }
 }
 

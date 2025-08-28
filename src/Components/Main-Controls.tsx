@@ -20,7 +20,7 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                            <div className="top-bet-win">
                                Amount Won
                                <div className ={`${!amountWon ?"display-amount":"--"}`}>
-                                   {amountWon}
+                                   Ksh{amountWon.toFixed(2)}
                                </div>
 
                            </div>
@@ -48,8 +48,6 @@ export const MainControls: FC<ControlProps> = ({spinTrigger, onBetAmount, betAmo
                                 </div>
                             ))}
                         </div>
-
-
                         <div className="bet-input">
                             <div
                                 className="plus-minus"

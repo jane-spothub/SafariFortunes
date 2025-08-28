@@ -33,9 +33,12 @@ export interface SpinResponse {
         reels: ReelMatrix; // the final 4x5 grid from backend
         wins: {
             symbol: SymbolName;
-            linesHit: number;
             payout: number;
-            lines: number[];
+            line: number;           // payline index (e.g. 20)
+            matchCount: number;     // how many consecutive symbols matched
+            pattern: SymbolName[];  // full line pattern returned by backend
+            linesHit: number;
+
         }[];
     };
 }

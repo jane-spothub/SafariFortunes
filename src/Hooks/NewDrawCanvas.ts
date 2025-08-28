@@ -1,7 +1,7 @@
-import { useRef, useCallback } from "react";
-import { reelsCount, symbolsPerReel, lineColors, generateRandomReels } from "./symbolsImages";
-import { getPaylinePositions } from "./mapWinToCanvas.ts";
-import type { SpinResponse } from "../Types/types.ts";
+import {useRef, useCallback} from "react";
+import {reelsCount, symbolsPerReel, lineColors, generateRandomReels} from "./symbolsImages";
+import {getPaylinePositions} from "./mapWinToCanvas.ts";
+import type {SpinResponse} from "../Types/types.ts";
 
 interface UseCanvasDrawingProps {
     canvasWidth: number;
@@ -20,22 +20,20 @@ export function useNewDrawCanvas({
                                      reels,
                                      spinResponse
                                  }: UseCanvasDrawingProps) {
+
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const pulseFrameRef = useRef<number>(0);
-    const winningSymbolFramesRef = useRef<Record<string, number>>({});
-
     const symbolWidth = canvasWidth / reelsCount;
     const symbolHeight = canvasHeight / symbolsPerReel;
-
     const initialReelsRef = useRef<string[][]>(generateRandomReels());
 
-    // Normalize backend reels [rows][cols] → [cols][rows]
+    // -------------------- Helpers --------------------
     function normalizeReels(backendReels: string[][]) {
         const rows = backendReels.length;
         const cols = backendReels[0]?.length ?? 0;
-        return Array.from({ length: cols }, (_, c) =>
-            Array.from({ length: rows }, (_, r) => backendReels[r][c])
+        return Array.from({length: cols}, (_, c) =>
+            Array.from({length: rows}, (_, r) => backendReels[r][c])
         );
     }
 
@@ -45,7 +43,9 @@ export function useNewDrawCanvas({
         ? normalized
         : initialReelsRef.current;
 
-    // -------------------- Background & Border --------------------
+    const goldStops = ["#67ff00","#183802","#67ff00","#3f8d0b","#204904"];
+
+
     const drawGradientBackground = useCallback((ctx: CanvasRenderingContext2D) => {
         const radius = 20;
         const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
@@ -67,8 +67,6 @@ export function useNewDrawCanvas({
         ctx.closePath();
         ctx.fill();
     }, [canvasWidth, canvasHeight]);
-
-    const goldStops = ["#67ff00", "#183802", "#67ff00", "#3f8d0b", "#204904"];
 
     const drawCanvasBorder = useCallback(
         (ctx: CanvasRenderingContext2D, glowOpacity = 0.8) => {
@@ -105,8 +103,9 @@ export function useNewDrawCanvas({
             ctx.stroke();
             ctx.restore();
         },
-        [canvasWidth, canvasHeight, spinTrigger]
+        [spinTrigger, canvasWidth, canvasHeight, goldStops]
     );
+
 
     const drawColumnSeparators = useCallback(
         (ctx: CanvasRenderingContext2D, glow = false) => {
@@ -133,7 +132,7 @@ export function useNewDrawCanvas({
         [canvasWidth, canvasHeight, spinTrigger]
     );
 
-    function getBreathingScale(intensity = 0.1, speed = 0.05) {
+    function getBreathingScale(intensity = 0.1, speed = 0.02) {
         return 1 + intensity * Math.sin(pulseFrameRef.current * speed);
     }
 
@@ -151,12 +150,10 @@ export function useNewDrawCanvas({
             const img = loadedSymbolImages[symbol];
             if (!img) return;
 
-            const symbolW = symbolWidth * 0.9 * scale;
-            const symbolH = symbolHeight * 0.9 * scale;
-
-            const drawX = x - symbolW / 2;
-            const drawY = y - symbolH / 2;
-            ctx.drawImage(img, drawX, drawY, symbolW, symbolH);
+            const baseW = symbolWidth * 0.7 * scale;
+            const baseH = symbolHeight * 0.7 * scale;
+            const drawX = x - baseW / 2;
+            const drawY = y - baseH / 2;
 
             if (highlight) {
                 const HighScores = ["Lion", "Tigre"];
@@ -182,85 +179,151 @@ export function useNewDrawCanvas({
                 }
 
                 ctx.save();
-                const breathing = getBreathingScale(0.1, 2.0);
-                ctx.translate(drawX + symbolW / 2, drawY + symbolH / 2);
+                const breathing = getBreathingScale(0.1, 2.1);
+
+                // apply breathing to both symbol + border
+                ctx.translate(drawX + baseW / 2, drawY + baseH / 2);
                 ctx.scale(breathing, breathing);
-                ctx.translate(-(drawX + symbolW / 2), -(drawY + symbolH / 2));
-                ctx.lineWidth = 4;
+                ctx.translate(-(drawX + baseW / 2), -(drawY + baseH / 2));
+
+                // draw symbol
+                ctx.drawImage(img, drawX, drawY, baseW, baseH);
+
+                // draw glowing border
+                ctx.lineWidth = 3;
                 ctx.strokeStyle = strokeColor;
                 ctx.shadowColor = shadowColor;
                 ctx.shadowBlur = shadowBlur;
-                ctx.strokeRect(drawX, drawY, symbolW, symbolH);
+                ctx.strokeRect(drawX, drawY, baseW, baseH);
+
                 ctx.restore();
+            } else {
+                // normal (non-highlighted) symbol
+                ctx.drawImage(img, drawX, drawY, baseW, baseH);
             }
         },
         [loadedSymbolImages, symbolWidth, symbolHeight]
     );
 
-    // -------------------- Draw Final Result --------------------
+
     const drawFinalResult = useCallback(
-        (reelSymbols: string[][]) => {
+        (reels: string[][]) => {
             const ctx = ctxRef.current;
             if (!ctx || !spinResponse) return;
-            pulseFrameRef.current += 0.05;
 
-            drawGradientBackground(ctx);
+            const symbolHeight = canvasHeight / symbolsPerReel;
+            const symbolWidth = canvasWidth / reelsCount;
+            let flashCount = 0;
 
-            const winningLineIds = spinResponse.winningPaylines.wins.flatMap(win => win.lines);
+            const results = spinResponse.winningPaylines.wins.map((win) => {
+                const linePositions = getPaylinePositions(win.line); // full [ [col,row], ... ]
 
-            // Draw symbols
-            for (let c = 0; c < reelsCount; c++) {
-                for (let r = 0; r < symbolsPerReel; r++) {
-                    const x = c * symbolWidth + symbolWidth / 2;
-                    const y = r * symbolHeight + symbolHeight / 2;
-                    const key = `${c}-${r}`;
-                    const isWinning = winningLineIds.some(lineId =>
-                        getPaylinePositions(lineId).some(([col, row]) => col === c && row === r)
-                    );
-                    if (isWinning) {
-                        winningSymbolFramesRef.current[key] = (winningSymbolFramesRef.current[key] ?? 0) + 0.05;
-                        const frame = winningSymbolFramesRef.current[key];
-                        const scale = 1 + 0.3 * Math.sin(frame * Math.PI);
-                        drawSymbol(reelSymbols[c][r], x, y, scale, true, pulseFrameRef.current);
-                    } else {
-                        drawSymbol(reelSymbols[c][r], x, y, 1);
+                const matchedPositions: [number, number][] = [];
+                linePositions.forEach(([col, row], idx) => {
+                    if (win.pattern[idx] === win.symbol) {
+                        matchedPositions.push([col, row]);
                     }
-                    // drawSymbol(reelSymbols[c][r], x, y, 1, isWinning, pulseFrameRef.current);
-                }
-            }
-
-            // Draw animated paylines
-            winningLineIds.forEach((lineId, i) => {
-                const positions = getPaylinePositions(lineId);
-                const color = lineColors[i % lineColors.length] ?? "#ff0";
-                ctx.save();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                positions.forEach(([col, row], idx) => {
-                    const x = col * symbolWidth + symbolWidth / 2;
-                    const y = row * symbolHeight + symbolHeight / 2;
-                    if (idx === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
                 });
-                ctx.stroke();
-                ctx.restore();
+
+                return {
+                    symbol: win.symbol,
+                    positions: matchedPositions,     // only glowing symbols
+                    fullLine: linePositions,         // full payline path
+                };
             });
 
-            drawColumnSeparators(ctx);
-            drawCanvasBorder(ctx);
+
+
+            const flashAnimation = () => {
+                flashCount++;
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                drawGradientBackground(ctx);
+                for (let c = 0; c < reelsCount; c++) {
+                    for (let r = 0; r < symbolsPerReel; r++) {
+                        const x = c * symbolWidth + symbolWidth / 2;
+                        const y = r * symbolHeight + symbolHeight / 2;
+
+                        const isWinning = results.some((res) =>
+                            res.positions.some(([col, row]) => col === c && row === r)
+                        );
+                        if (!isWinning) {
+                            drawSymbol(reels[c][r], x, y, 1);
+                        }
+                    }
+                }
+
+                results.forEach((result, i) => {
+                    const lineColor = lineColors[i % lineColors.length];
+                    result.positions.forEach(([col, row]) => {
+                        const x = col * symbolWidth + symbolWidth / 2;
+                        const y = row * symbolHeight + symbolHeight / 2;
+                        const scale = 1.1 + 0.2 * Math.sin(flashCount * 0.3);
+                        drawSymbol(result.symbol, x, y, scale, true, flashCount);
+                    });
+
+                    // find the rightmost winning symbol's column
+                    const lastWinningCol = Math.max(...result.positions.map(([col]) => col));
+
+// filter fullLine to only include positions up to that column
+                    const trimmedLine = result.fullLine.filter(([col]) => col <= lastWinningCol);
+
+                    ctx.save();
+                    ctx.strokeStyle = lineColor;
+                    ctx.lineWidth = 2;
+                    // ctx.shadowColor = lineColor;
+                    // ctx.shadowBlur = 0;
+
+                    ctx.beginPath();
+                    trimmedLine.forEach(([col, row], idx) => {
+                        const x = col * symbolWidth + symbolWidth / 2;
+                        const y = row * symbolHeight + symbolHeight / 2;
+
+                        if (idx === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    });
+                    ctx.stroke();
+                    ctx.restore();
+
+                });
+
+
+
+                if (flashCount < 40) {
+                    animationFrameRef.current = requestAnimationFrame(flashAnimation);
+                }
+
+                drawColumnSeparators(ctx);
+                drawCanvasBorder(ctx);
+            };
+
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+            flashAnimation();
         },
-        [canvasWidth, canvasHeight, drawGradientBackground, drawColumnSeparators, drawCanvasBorder, drawSymbol, spinResponse]
+        [
+            spinResponse,
+            canvasWidth,
+            canvasHeight,
+            drawGradientBackground,
+            drawColumnSeparators,
+            drawCanvasBorder,
+            drawSymbol,
+        ]
     );
 
-    // -------------------- Spin Reels --------------------
+
+    // -------------------- Spin Reels Animation --------------------
     const spinReels = useCallback(() => {
         const ctx = ctxRef.current;
         if (!ctx) return;
 
         let frame = 0;
         const SPIN_DURATION = 60;
-        const reelStopFrames = Array.from({ length: reelsCount }, (_, i) => SPIN_DURATION + i * 25);
+        const reelStopFrames = Array.from({length: reelsCount}, (_, i) => SPIN_DURATION + i * 25);
         const currentOffsets = Array(reelsCount).fill(0);
 
         const animate = () => {
@@ -273,7 +336,6 @@ export function useNewDrawCanvas({
                 if (isSpinning) {
                     currentOffsets[c] += 24;
                     if (currentOffsets[c] >= symbolHeight) currentOffsets[c] = 0;
-
                     for (let r = -1; r < symbolsPerReel + 1; r++) {
                         const x = c * symbolWidth + symbolWidth / 2;
                         const y = ((r * symbolHeight + currentOffsets[c]) % canvasHeight) + symbolHeight / 2;
@@ -294,9 +356,11 @@ export function useNewDrawCanvas({
             drawCanvasBorder(ctx);
 
             if (reelStopFrames.every(stop => frame >= stop)) {
-                // start flashing/animation on final result
+                // start final result flashing animation
                 const flashAnimation = () => {
+
                     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
                     drawFinalResult(activeReels);
                     pulseFrameRef.current += 0.05;
                     animationFrameRef.current = requestAnimationFrame(flashAnimation);
@@ -314,8 +378,8 @@ export function useNewDrawCanvas({
         drawGradientBackground,
         drawColumnSeparators,
         drawCanvasBorder,
-        symbolHeight,
         symbolWidth,
+        symbolHeight,
         loadedSymbolImages,
         drawSymbol,
         activeReels,
@@ -340,5 +404,5 @@ export function useNewDrawCanvas({
         drawCanvasBorder(ctx);
     }, [canvasWidth, canvasHeight, drawGradientBackground, drawColumnSeparators, drawCanvasBorder, symbolWidth, symbolHeight, drawSymbol, activeReels]);
 
-    return { ctxRef, animationFrameRef, drawGrid, spinReels };
+    return {ctxRef, animationFrameRef, drawGrid, spinReels};
 }

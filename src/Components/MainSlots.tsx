@@ -42,7 +42,7 @@ export const MainSlots = () => {
         socket.onmessage = (event: MessageEvent<string>) => {
             try {
                 const data: SpinResponse = JSON.parse(event.data);
-                // console.log("Game response:", data);
+                console.log("Game response:", data);
                 setSpinResponse(data);
                 setTimeout(()=>{
                     setBalance(data.Balance);
@@ -94,7 +94,7 @@ export const MainSlots = () => {
 
     useEffect(() => {
         if (amountWon > 0) {
-                setResultPopUp(true);
+            setResultPopUp(true);
             if (amountWon >= 1000) {
                 playSafariSnd("ThatsMassiveSnd");
             } else if (amountWon > 500) {
@@ -125,9 +125,9 @@ export const MainSlots = () => {
             <div className="main-slots-container background">
                 <div className="top-bar">
                     <div className="balance">Bal:
-                       <div className="balance-amount">
-                           {balance}
-                       </div>
+                        <div className="balance-amount">
+                            {balance}
+                        </div>
                     </div>
 
                     <img className="logo" src={slotLogo} alt="logo"/>
@@ -181,7 +181,7 @@ export const MainSlots = () => {
                                             : "Congratulations"}
                                 </h1>
                                 <h2 className="three-d-text">
-                                    Ksh{amountWon}
+                                    Ksh{amountWon.toFixed(2)}
                                 </h2>
 
                             </div>

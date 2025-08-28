@@ -10,35 +10,28 @@ export interface PaylineResult {
 }
 
 
-
 export function getPaylinePositions(lineId: number): [number, number][] {
-    // lineId is 1-based (Line 1 = top row), so adjust:
     const line = paylines[lineId - 1];
+    if (!line) return []; // <--- prevent undefined.map
     return line.map((row, col) => [col, row] as [number, number]);
 }
 
 export function mapServerWinsToResults(
-    wins: {
-        symbol: SymbolName;
-        linesHit: number;
-        payout: number;
-        lines: number[];
-    }[]
+    wins: { symbol: SymbolName; linesHit: number; payout: number; lines?: number[] }[]
 ): PaylineResult[] {
     return wins.flatMap(win =>
-        win.lines.map(lineId => {
-            const payline = paylines[lineId - 1]; // backend lines are 1-based
-            const positions: [number, number][] = payline.map(
-                (rowIndex, colIndex) => [colIndex, rowIndex]
-            );
-
+        (win.lines ?? []).flatMap(lineId => {
+            const payline = paylines[lineId - 1];
+            if (!payline) return []; // skip invalid lineIds
+            const positions: [number, number][] = payline.map((rowIndex, colIndex) => [colIndex, rowIndex]);
             return {
                 symbol: win.symbol,
                 payout: win.payout,
                 linesHit: win.linesHit,
-                lineIds: win.lines,
+                lineIds: win.lines ?? [],
                 positions
             };
         })
     );
 }
+
