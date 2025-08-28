@@ -65,14 +65,11 @@ export const MainSlots = () => {
                     setPaylineResults(results);
                     setTotalPayout(data.winningPaylines.totalPayout);
                 }
-
-
             } catch (err) {
                 console.error("Error parsing server message:", err);
             }
         };
     }, [connectSocket, getSocket]);
-
 
     const handleSpin = () => {
         if (spinTrigger) return;
@@ -90,13 +87,7 @@ export const MainSlots = () => {
             amount: `${betAmount}`
         };
         sendData(spinRequest);
-
         playSafariLoop();
-        // if(resultPopUp){
-        //     setResultPopUp(false);
-        //     setTimeout(()=>{
-        //             setAmountWon(0);
-        //         },1000)}
         setTimeout(() => {
             setSpinTrigger(false);
             playSafariSnd("ReelStop");
@@ -104,7 +95,6 @@ export const MainSlots = () => {
     };
 
     useEffect(() => {
-
         if (amountWon > 1) {
                 setResultPopUp(true);
             if (amountWon >= 1000) {
@@ -161,18 +151,6 @@ export const MainSlots = () => {
                     )}
                 </div>
 
-
-                {/*<SlotsCanvas*/}
-                {/*    spinTrigger={spinTrigger}*/}
-                {/*    betAmount={betAmount}*/}
-                {/*    OnSetAmountWon={setAmountWon}*/}
-                {/*    resultPopUp={resultPopUp}*/}
-                {/*    noWinning={noWinning}*/}
-                {/*    reels={serverReels}            // 🔑 pass reels*/}
-                {/*    paylines={paylineResults}*/}
-                {/*    totalPayout={totalPayout}*/}
-                {/*/>*/}
-
                 <SlotCanvas
                     spinTrigger={spinTrigger}
                     reels={serverReels}
@@ -192,6 +170,7 @@ export const MainSlots = () => {
                         OnSetHelp={setIsHelpOpen}
                     />
                 )}
+
                 {resultPopUp && (
                     <div className={`results-overlay ${isFading ? "fade-out" : "pop-in"}`}>
                         <div className="results-container">
