@@ -22,7 +22,7 @@ export function useNewDrawCanvas({
                                  }: UseCanvasDrawingProps) {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const animationFrameRef = useRef<number | null>(null);
-
+    const pulseFrameRef = useRef<number>(0);
     const symbolWidth = canvasWidth / reelsCount;
     const symbolHeight = canvasHeight / symbolsPerReel;
     function normalizeReels(backendReels: string[][]): string[][] {
@@ -80,6 +80,14 @@ export function useNewDrawCanvas({
     ) => {
         ctx.save();
         const borderThickness = 4;
+        // apply breathing only while spinning or when showing win
+        // const breathing = spinTrigger || spinResponse ? getBreathingScale(0.05, 1.5) : 1;
+        //
+        // ctx.translate(canvasWidth / 2, 700 / 2);  // center on slot area
+        // ctx.scale(breathing, breathing);
+        // ctx.translate(-canvasWidth / 2, -700 / 2);
+        //
+        // const borderThickness = 4;
         const cornerRadius = 10;
         const holeRadius = 15;
         ctx.lineWidth = borderThickness;
@@ -208,24 +216,13 @@ export function useNewDrawCanvas({
         ctx.restore();
     }, [canvasWidth, canvasHeight, spinTrigger]);
 
-    // const drawSymbol = useCallback((symbol: string, x: number, y: number, scale = 1) => {
-    //     const ctx = ctxRef.current;
-    //     if (!ctx) return;
-    //
-    //     const img = loadedSymbolImages[symbol];
-    //     if (!img) return;
-    //
-    //     const symbolW = (symbolWidth * 0.9) * scale;
-    //     const symbolH = (symbolHeight * 0.9) * scale;
-    //     ctx.drawImage(img, x - symbolW / 2, y - symbolH / 2, symbolW, symbolH);
-    // }, [loadedSymbolImages, symbolWidth, symbolHeight]);
+
     const drawSymbol = useCallback((
         symbol: string,
         x: number,
         y: number,
         scale = 1,
         highlight: boolean = false,
-        flashFrame: number = 0
     ) => {
         const ctx = ctxRef.current;
         if (!ctx) return;
@@ -233,8 +230,14 @@ export function useNewDrawCanvas({
         const img = loadedSymbolImages[symbol];
         if (!img) return;
 
-        const symbolW = (symbolWidth * 0.9) * scale;
-        const symbolH = (symbolHeight * 0.9) * scale;
+        // const symbolW = (symbolWidth * 0.9) * scale;
+        // const symbolH = (symbolHeight * 0.9) * scale;
+        // const breathingScale = highlight ? getBreathingScale(0.12, 2.0) : 1;
+        const breathingScale = 1; // keep symbol size fixed
+
+        const symbolW = (symbolWidth * 0.9) * scale * breathingScale;
+        const symbolH = (symbolHeight * 0.9) * scale * breathingScale;
+
         const drawX = x - symbolW / 2;
         const drawY = y - symbolH / 2;
 
@@ -253,25 +256,34 @@ export function useNewDrawCanvas({
             if (HighScores.includes(symbol)) {
                 strokeColor = "#00FFFF";   // neon blue
                 shadowColor = "#00FFFF";
-                shadowBlur = 30 + 10 * Math.abs(Math.sin(flashFrame * 0.3));
+                shadowBlur = 25 + 15 * Math.abs(Math.sin(pulseFrameRef.current * 0.15));
             } else if (MediumScores.includes(symbol)) {
                 strokeColor = "#bf00ff";   // neon purple
                 shadowColor = "#bf00ff";
-                shadowBlur = 30 + 10 * Math.abs(Math.sin(flashFrame * 0.3));
+                shadowBlur = 25 + 15 * Math.abs(Math.sin(pulseFrameRef.current * 0.15));
             } else if (LowScores.includes(symbol)) {
                 strokeColor = "#00bbff";   // neon cyan
                 shadowColor = "#00bbff";
-                shadowBlur = 30 + 10 * Math.abs(Math.sin(flashFrame * 0.3));
+                shadowBlur = 25 + 15 * Math.abs(Math.sin(pulseFrameRef.current * 0.15));
             }
 
             ctx.save();
+
+            // 🎯 breathing transform applied only to the highlight box
+            const breathing = getBreathingScale(0.1, 2.0); // intensity & speed
+            ctx.translate(drawX + symbolW / 2, drawY + symbolH / 2); // move to symbol center
+            ctx.scale(breathing, breathing);
+            ctx.translate(-(drawX + symbolW / 2), -(drawY + symbolH / 2)); // back
+
             ctx.lineWidth = 4;
             ctx.strokeStyle = strokeColor;
             ctx.shadowColor = shadowColor;
             ctx.shadowBlur = shadowBlur;
             ctx.strokeRect(drawX, drawY, symbolW, symbolH);
+
             ctx.restore();
         }
+
     }, [loadedSymbolImages, symbolWidth, symbolHeight]);
 
     // --------------------------------------------------------------------------
@@ -283,6 +295,7 @@ export function useNewDrawCanvas({
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             if(!spinResponse) return;
             const winningLineIds = spinResponse.winningPaylines.wins.flatMap(win => win.lines);
+            pulseFrameRef.current += 0.05; // smaller = slower breathing
 
             drawGradientBackground(ctx);
 
@@ -296,7 +309,7 @@ export function useNewDrawCanvas({
                     const isWinning = winningLineIds.some(lineId =>
                         getPaylinePositions(lineId).some(([col, row]) => col === c && row === r)
                     );
-                    drawSymbol(reelSymbols[c][r], x, y, 1, isWinning, 0);
+                    drawSymbol(reelSymbols[c][r], x, y, 1, isWinning);
 
                 }
             }
@@ -329,7 +342,11 @@ export function useNewDrawCanvas({
         [canvasWidth, canvasHeight, drawGradientBackground, spinResponse, drawColumnSeparators, drawCanvasBorder, symbolWidth, symbolHeight, drawSymbol]
     );
 
-    // --------------------------------------------------------------------------
+    function getBreathingScale(intensity = 0.1, speed = 0.05) {
+        return 1 + intensity * Math.sin(pulseFrameRef.current * speed);
+    }
+
+
     const spinReels = useCallback(() => {
         const ctx = ctxRef.current;
         if (!ctx) return;
@@ -338,6 +355,7 @@ export function useNewDrawCanvas({
         const SPIN_DURATION = 60;
         const reelStopFrames = Array.from({length: reelsCount}, (_, i) => SPIN_DURATION + i * 25);
         const currentOffsets = Array(reelsCount).fill(0);
+        pulseFrameRef.current += 0.05; // smaller = slower breathing
 
         const animate = () => {
             frame++;
@@ -379,6 +397,20 @@ export function useNewDrawCanvas({
             } else {
                 drawFinalResult(activeReels);
             }
+
+            // const allStopped = reelStopFrames.every(stop => frame >= stop);
+            // if (!allStopped) {
+            //     animationFrameRef.current = requestAnimationFrame(animate);
+            // } else {
+            //     const animateWinning = () => {
+            //         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            //         drawFinalResult(activeReels);
+            //         pulseFrameRef.current += 0.05;
+            //         animationFrameRef.current = requestAnimationFrame(animateWinning);
+            //     };
+            //     animateWinning();
+            // }
+
         };
 
         animate();
