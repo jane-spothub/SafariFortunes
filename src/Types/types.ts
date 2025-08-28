@@ -14,6 +14,13 @@ export type Row = [SymbolName, SymbolName, SymbolName, SymbolName, SymbolName];
 // ReelMatrix = exactly 4 rows (4 x 5)
 export type ReelMatrix = [Row, Row, Row, Row];
 
+// insufficient bal
+export interface ServerResponse {
+    message: string;         // e.g., "Insufficient Account Balance"
+    msisdn: string;          // user id
+    Balance: number;         // numeric balance
+}
+
 
 // backend spin result
 export interface SpinResponse {

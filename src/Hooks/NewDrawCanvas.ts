@@ -391,25 +391,19 @@ export function useNewDrawCanvas({
             drawColumnSeparators(ctx, true);
             drawCanvasBorder(ctx);
 
+
             const allStopped = reelStopFrames.every(stop => frame >= stop);
             if (!allStopped) {
                 animationFrameRef.current = requestAnimationFrame(animate);
             } else {
-                drawFinalResult(activeReels);
+                const animateWinning = () => {
+                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                    drawFinalResult(activeReels);
+                    pulseFrameRef.current += 0.05;
+                    animationFrameRef.current = requestAnimationFrame(animateWinning);
+                };
+                animateWinning();
             }
-
-            // const allStopped = reelStopFrames.every(stop => frame >= stop);
-            // if (!allStopped) {
-            //     animationFrameRef.current = requestAnimationFrame(animate);
-            // } else {
-            //     const animateWinning = () => {
-            //         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            //         drawFinalResult(activeReels);
-            //         pulseFrameRef.current += 0.05;
-            //         animationFrameRef.current = requestAnimationFrame(animateWinning);
-            //     };
-            //     animateWinning();
-            // }
 
         };
 

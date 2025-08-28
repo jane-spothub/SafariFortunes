@@ -28,7 +28,12 @@ export const MainSlots = () => {
     const [serverReels, setServerReels] = useState<string[][]>([]);
     const [paylineResults, setPaylineResults] = useState<PaylineResult[]>([]);
     const [totalPayout, setTotalPayout] = useState(0);
+    const [toastMsg, setToastMsg] = useState<string | null>(null);
 
+    const showToast = (msg: string) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(null), 3000); // hide after 3s
+    };
 
     useEffect(() => {
         connectSocket();
@@ -45,6 +50,10 @@ export const MainSlots = () => {
                     setAmountWon(parseFloat(data.winnings));
                 },2500)
 
+                // If backend says insufficient balance, show toast
+                if (data.message === "Insufficient Account Balance") {
+                    showToast(data.message);
+                }
 
                 if (data.winningPaylines) {
                     const serverReels = data.winningPaylines.reels;
@@ -69,6 +78,11 @@ export const MainSlots = () => {
         if (spinTrigger) return;
         // if (balance <= 0) return;
         if (resultPopUp) return;
+        const numericBalance = parseFloat(balance.toString().replace(/,/g, ""));
+        if (!isNaN(numericBalance) && numericBalance === 0) {
+            showToast("Your balance is empty!");
+
+        }
         setSpinTrigger(true);
         const spinRequest: sendData = {
             msisdn: "254791847766", // or dynamically from user
@@ -90,6 +104,7 @@ export const MainSlots = () => {
     };
 
     useEffect(() => {
+
         if (amountWon > 1) {
                 setResultPopUp(true);
             if (amountWon >= 1000) {
@@ -198,6 +213,13 @@ export const MainSlots = () => {
                         </div>
                     </div>
                 )}
+
+                {toastMsg && (
+                    <div className="custom-toast">
+                        {toastMsg}
+                    </div>
+                )}
+
             </div>
         </div>
     );
